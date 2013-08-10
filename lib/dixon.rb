@@ -1,3 +1,3 @@
 require 'dixon/version'
-require 'dixon/validators/helpers'
+require 'dixon/validators/helper'
 require 'dixon/validators/taiwan'
