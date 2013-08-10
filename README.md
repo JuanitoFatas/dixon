@@ -1,4 +1,4 @@
-# Dixon
+# Dixon [![Gem Version](https://badge.fury.io/rb/dixon.png)](http://badge.fury.io/rb/dixon)
 
 [Frank] Dixon checks your ID number.
 
