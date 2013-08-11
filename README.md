@@ -1,8 +1,15 @@
-# Dixon [![Gem Version](https://badge.fury.io/rb/dixon.png)](http://badge.fury.io/rb/dixon)
+# Dixon
+
+[![Gem Version](https://badge.fury.io/rb/dixon.png)](http://badge.fury.io/rb/dixon)
+[![Travis Build Status](https://api.travis-ci.org/JuanitoFatas/dixon.png)](https://travis-ci.org/JuanitoFatas/dixon)
 
 [Frank] Dixon checks your ID number.
 
-Now only supports identification number for Taiwan, more are coming up.
+![Frank Dixon checks your ID number.](https://dl.dropboxusercontent.com/u/4708852/img/jZiiuPkCYYnRWQCzCjzLrg-frank-dixon.jpeg)
+
+*Credit: http://www.quotefully.com/*
+
+Dixon now only supports identification number check for Taiwan, more are coming up.
 
 ## Requirements
 
