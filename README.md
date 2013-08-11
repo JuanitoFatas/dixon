@@ -41,10 +41,6 @@ Provides three instance methods: `checks`, `gender`, and `issued_by`.
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-## TODO
-
-* add tests.
-
 ## Author
 
 Juanito Fatas

@@ -5,6 +5,7 @@ module Dixon
       INVALID_MESSAGE = 'Invalid ID number.'
 
       LETTER_ISSUED_BY = {
+        ##
         # Active Letters
         'A' => 'Taipei City'     , 'B' => 'Taichung City',
         'C' => 'Keelung City'    , 'D' => 'Tainan City',
@@ -17,6 +18,7 @@ module Dixon
         'T' => 'Pingtung County' , 'U' => 'Hualien County',
         'V' => 'Taitung County'  , 'W' => 'Kinmen County',
         'X' => 'Penghu County'   , 'Z' => 'Lienchiang County',
+        ##
         # Letters no longer issued
         'L' => 'Taichung County' ,
         'R' => 'Tainan County'   ,
@@ -35,7 +37,8 @@ module Dixon
 
       RULE_NUMBERS = [1, 9, 8, 7, 6, 5, 4, 3, 2, 1, 1]
 
-      ## Check if a given ID is valid.
+      ##
+      # Check if a given ID is valid.
       # `id` must be a string, case is insensitive.
       # First convert ID into all numbers, then multiply to RULE_NUMBERS
       # element by element. Sum up and take a 10 modulo then check
@@ -49,11 +52,11 @@ module Dixon
         # sum 1, 45,  8, 14, 43, 15, 12, 21, 10,  7, 5
         # => 180
         # 180 mod 10, is the remainder equal to zero? If so, return true.
-        #
         return (mapcar(-> (a,b) { a * b }, converted, RULE_NUMBERS).reduce(:+).divmod 10)[1] == 0
       end
 
-      ## Returns gender for given ID.
+      ##
+      # Returns gender for given ID.
       # By check the second digit of ID.
       # 1 is male, 2 is female.
       def gender(id)
@@ -64,19 +67,22 @@ module Dixon
         end
       end
 
-      ## Returns local agencies who issued your id.
+      ##
+      # Returns local agencies who issued your id.
       def issued_by(id)
         LETTER_ISSUED_BY[id[0]]
       end
 
       private
 
-      ## Convert array of strings into integer array.
+      ##
+      # Convert array of strings into integer array.
       def to_i_array(str_arr)
         str_arr.map(&:to_i)
       end
 
-      ## Convert an identification number to array of strings
+      ##
+      # Convert an identification number to array of strings
       # First letter conversion rules is defined in LETTER_NUMBERS
       # `convert 'F127337575'` will result in
       # [1, 5, 1, 2, 7, 3, 3, 7, 5, 7, 5]
@@ -84,8 +90,14 @@ module Dixon
         to_i_array((LETTER_NUMBERS[id[0]] + id[1..-1]).split(''))
       end
 
-      ## mapcar operates on successive elements of the arrays.
-      # fn is applied to the first element of each array, then to the second element of each array, and so on. The iteration terminates when the shortest array runs out, and excess elements in other arrays are ignored. The value returned by mapcar is a array of the results of successive calls to function
+      ##
+      # mapcar operates on successive elements of the arrays.
+      # fn is applied to the first element of each array,
+      # then to the secondf element of each array, and so on.
+      # The iteration terminates when the shortest array runs out,
+      # and excess elements in other arrays are ignored.
+      # The value returned by mapcar is a array of the results of
+      # successive calls to function.
       def mapcar(fn, *arrs)
         return [] if arrs.empty? or arrs.include? []
         transposed = if arrs.element_of_same_size
@@ -103,20 +115,38 @@ end
 
 module ValidateFormat
 
+  ##
+  # A123456789
   TAIWAN_ID_REGEXP = /[a-zA-Z][1|2][0-9]+/i
 
-  ## Check if given id's format is valid.
+  ##
+  # Check if given id's format is valid.
   # The current ID number has exact 10 digits
   # The first digit is one capital English letter and
   # is followed by nine Arabic numerals.
-  def valid_format?(id)
-    return true if id =~ TAIWAN_ID_REGEXP and id.size == 10
-    puts 'Invalid ID number.'
-    false
+  # returns
+  #   'Empty ID.' for empty string
+  #   'Valid ID.' if the format is correct.
+  #   otherwise, 'Invalid ID number.'
+  def validate_id_format(id)
+    id_str = id.to_s
+    return 'Empty ID.' if id_str.empty?
+    return 'Valid ID.' if id_str =~ TAIWAN_ID_REGEXP and id_str.size == 10
+    return Dixon::Validators::Taiwan::INVALID_MESSAGE
   end
 
+  ##
+  # Add a before_hook for methods that
+  # defined in literal symbol array.
   %i(checks gender issued_by convert).each do |m|
-    define_method(m) { |id| super(id) if valid_format? id }
+    define_method(m) do |id|
+      is_it_valid = validate_id_format id
+      if is_it_valid == 'Valid ID.'
+        super(id)
+      else
+        return is_it_valid
+      end
+    end
   end
 
   private :convert
